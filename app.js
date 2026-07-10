@@ -930,9 +930,9 @@ function notifyVisit(){
     if(sessionStorage.getItem("aroma_visit_notified")) return;
     sessionStorage.setItem("aroma_visit_notified","1");
     const ref = document.referrer ? (new URL(document.referrer)).hostname : "doğrudan";
-    fetch("https://ntfy.sh/bba-aroma-demo-78b0f9e18f", {
+    fetch("https://ntfy.sh/bba-order-demo-78b0f9e18f", {
       method:"POST",
-      headers:{"Title":"Aroma Kahve demo ziyareti","Tags":"eyes"},
+      headers:{"Title":"BBA Order demo açıldı","Tags":"eyes"},
       body:`Biri demoyu açtı · kaynak: ${ref} · ${new Date().toLocaleString("tr-TR")}`
     }).catch(()=>{});
   }catch(e){}
