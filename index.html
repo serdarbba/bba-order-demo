@@ -805,6 +805,28 @@
   </div>
 </div>
 
+
+<!-- BBA imzası: link başkasına iletildiğinde kimin yaptığı kaybolmasın.
+     Tek satır — iki satırlık hali son butonu örtüyordu. -->
+<div id="bbaSig">
+  <span class="bs-brand">BBA</span> TECHNOLOGY
+  <span class="bs-dot">·</span> yapay zekâ, mobil, web
+  <span class="bs-dot">·</span> İzmir
+</div>
+
+<style>
+#bbaSig{position:fixed;left:0;right:0;bottom:0;z-index:60;text-align:center;
+  padding:7px 12px calc(7px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(27,20,16,0),rgba(27,20,16,.96) 55%);
+  pointer-events:none;font-family:inherit;
+  font-size:9.5px;letter-spacing:1.6px;color:#8c7d6e;white-space:nowrap;overflow:hidden}
+#bbaSig .bs-brand{color:#c98a3f;font-weight:700;letter-spacing:2.4px}
+#bbaSig .bs-dot{color:#5a4d43;margin:0 4px}
+/* imza sabit; kaydırılan kapsayıcılara alt boşluk (kaydırma body'de değil) */
+.scroll{padding-bottom:44px}
+#s-splash{padding-bottom:44px}
+</style>
+
 <script src="app.js"></script>
 <script src="ai.js"></script>
 </body>
