@@ -1,6 +1,6 @@
 {
-  "name": "Pablo · Sırada Bekleme",
-  "short_name": "Pablo",
+  "name": "Aroma Kahve · Sırada Bekleme",
+  "short_name": "Aroma Kahve",
   "description": "Kasada sıra bekleme — telefondan sipariş ver, öde, hazır olunca bildirim al.",
   "start_url": "./index.html",
   "scope": "./",

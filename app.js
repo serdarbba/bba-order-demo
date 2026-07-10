@@ -1,18 +1,18 @@
 /* ===========================================================
-   Pablo · Sırada Bekleme — Demo (white-label çekirdek: BBAI)
+   Aroma Kahve · Sırada Bekleme — Demo (white-label çekirdek: BBAI)
    POS-bağımsız satış demosu. Veri sahteleri mock.
    =========================================================== */
 
 /* ---------- Veri (white-label config: tema + menü) ---------- */
-const BRAND = { name:"PABLO", accent:"#c98a3f" };
+const BRAND = { name:"AROMA", accent:"#c98a3f" };
 
 const BRANCHES = [
-  { id:"alsancak", name:"Pablo Alsancak", addr:"Kıbrıs Şehitleri Cd. · 0.4 km", busy:"Yoğun" },
-  { id:"bostanli", name:"Pablo Bostanlı", addr:"Cemal Gürsel Cd. · 2.1 km", busy:"Sakin" },
-  { id:"gaziemir", name:"Pablo Gaziemir (Merkez)", addr:"Fatih Mah. 1203 Sk. · 6.8 km", busy:"Normal" },
+  { id:"alsancak", name:"Aroma Kahve Alsancak", addr:"Kıbrıs Şehitleri Cd. · 0.4 km", busy:"Yoğun" },
+  { id:"bostanli", name:"Aroma Kahve Bostanlı", addr:"Cemal Gürsel Cd. · 2.1 km", busy:"Sakin" },
+  { id:"gaziemir", name:"Aroma Kahve Gaziemir (Merkez)", addr:"Fatih Mah. 1203 Sk. · 6.8 km", busy:"Normal" },
 ];
 
-// Gerçek Pablo Artisan Coffee menüsü (Yemeksepeti). o: M=sütlü kahve (süt+shot), B=sade kahve (shot), P=sabit (opsiyonsuz)
+// Gerçek Aroma Kahve menüsü (Yemeksepeti). o: M=sütlü kahve (süt+shot), B=sade kahve (shot), P=sabit (opsiyonsuz)
 const MENU = [
   { cat:"Sıcak Kahveler", items:[
     { id:"americano",  name:"Americano",          emo:"☕", desc:"Espressoya sıcak su eklenerek hazırlanır.", price:240, o:"B" },
@@ -81,7 +81,7 @@ const MENU = [
     { id:"lotusmono",  name:"Lotus Mono Cheesecake",emo:"🍰",desc:"Dilim.", price:340, o:"P", tag:"Çok Satan" },
     { id:"karaorman",  name:"Karaorman Pasta",    emo:"🍰", desc:"Dilim olarak servis edilir.", price:315, o:"P" },
     { id:"monstercookie",name:"Monster Cookie",   emo:"🍪", desc:"Akışkan çikolata.", price:280, o:"P" },
-    { id:"pablobomba", name:"Pablo Bomba",        emo:"🍩", desc:"Adet olarak servis edilir.", price:200, o:"P" },
+    { id:"aromabomba", name:"Aroma Kahve Bomba",        emo:"🍩", desc:"Adet olarak servis edilir.", price:200, o:"P" },
     { id:"lotusberliner",name:"Lotuslu Berliner", emo:"🍩", desc:"Adet olarak servis edilir.", price:220, o:"P" },
   ]},
   { cat:"Bakery & Atıştırmalık", items:[
@@ -124,19 +124,19 @@ const itemOpts = (id)=>{ const it=findItem(id); return OPT_MAP[it && it.o ? it.o
 
 /* ---------- Durum ---------- */
 // branch QR'dan gelir (her şubenin QR'ı farklı). Self-servis: masa yok, sipariş tezgahtan no ile alınır.
-let state = { branch:"alsancak", cart:[], pay:"card", tab:"menu", phone:"+90 532 418 22 07", name:(localStorage.getItem("pablo_name")||""), pickupMin:0, member:(localStorage.getItem("pablo_member")==="1"), remote:false, suspendAdd:0 };
+let state = { branch:"alsancak", cart:[], pay:"card", tab:"menu", phone:"+90 532 418 22 07", name:(localStorage.getItem("aroma_name")||""), pickupMin:0, member:(localStorage.getItem("aroma_member")==="1"), remote:false, suspendAdd:0 };
 const PICKUPS = [{m:0,l:"Hemen"},{m:15,l:"15 dk"},{m:30,l:"30 dk"},{m:60,l:"1 saat"}];
 function pickupLabel(min){ return new Date(Date.now()+min*60000).toLocaleTimeString("tr-TR",{hour:'2-digit',minute:'2-digit'}); }
 function selPickup(m){ state.pickupMin=m; renderPay(); }
 let currentOrder = { no:"P-204", name:"" };
-function onName(v){ state.name=v; localStorage.setItem("pablo_name", v); }
-const LOY_KEY = "pablo_loyalty";
+function onName(v){ state.name=v; localStorage.setItem("aroma_name", v); }
+const LOY_KEY = "aroma_loyalty";
 let loyalty = JSON.parse(localStorage.getItem(LOY_KEY) || '{"stamps":3,"points":640}');
 function saveLoy(){ localStorage.setItem(LOY_KEY, JSON.stringify(loyalty)); }
 
 /* Cüzdan & seviye */
-let wallet = parseInt(localStorage.getItem("pablo_wallet") ?? "250", 10);
-function saveWallet(){ localStorage.setItem("pablo_wallet", wallet); }
+let wallet = parseInt(localStorage.getItem("aroma_wallet") ?? "250", 10);
+function saveWallet(){ localStorage.setItem("aroma_wallet", wallet); }
 const TIERS = [{n:"Bronze",min:0,emo:"🥉"},{n:"Silver",min:1000,emo:"🥈"},{n:"Gold",min:3000,emo:"🥇"}];
 const curTier = p => TIERS.reduce((t,x)=> p>=x.min? x : t, TIERS[0]);
 const nextTier = p => TIERS.find(x=>x.min>p) || null;
@@ -152,23 +152,23 @@ const busyOf = id => { const b=BRANCHES.find(x=>x.id===id)||BRANCHES[0]; return 
 const aheadCount = () => kdsLoad().filter(o=>o.status!=="ready").length;
 
 /* Dijital askıda kahve */
-const SUSP_KEY="pablo_suspended";
+const SUSP_KEY="aroma_suspended";
 let suspended = parseInt(localStorage.getItem(SUSP_KEY) ?? "12", 10);
 function saveSusp(){ localStorage.setItem(SUSP_KEY, suspended); }
 const SUSPEND_PRICE=50;
 let askFeed = [
   { n:"Mehmet K.",   emo:"🙂", t:"az önce",    q:1 },
   { n:"Elif",        emo:"💛", t:"12 dk önce", q:2 },
-  { n:"Bir Pablo dostu", emo:"🫶", t:"34 dk önce", q:1 },
+  { n:"Bir Aroma Kahve dostu", emo:"🫶", t:"34 dk önce", q:1 },
 ];
 
 /* Her zamanki (son sipariş) */
-let usual = JSON.parse(localStorage.getItem("pablo_usual") || "null")
+let usual = JSON.parse(localStorage.getItem("aroma_usual") || "null")
   || [ {id:"flatwhite",name:"Flat White",emo:"☕",qty:1,opt:"Tam Yağlı",unit:280},
        {id:"lotusmono",name:"Lotus Mono Cheesecake",emo:"🍰",qty:1,opt:"",unit:340} ];
 
 /* Üyelik & geçmiş siparişler (üyelere özel) */
-const HIST_KEY="pablo_history";
+const HIST_KEY="aroma_history";
 const histLoad = ()=> JSON.parse(localStorage.getItem(HIST_KEY)||"[]");
 const histSave = h => localStorage.setItem(HIST_KEY, JSON.stringify(h));
 function nowStamp(){ const d=new Date(Date.now()); return d.toLocaleDateString("tr-TR",{day:'numeric',month:'long'})+" · "+d.toLocaleTimeString("tr-TR",{hour:'2-digit',minute:'2-digit'}); }
@@ -230,7 +230,7 @@ function renderBranches(){
     return `
     <div class="branch ${state.branch===b.id?'sel':''}" onclick="selBranch('${b.id}')">
       <div class="pin">📍</div>
-      <div class="info"><b>${b.name.replace('Pablo ','')}</b><span>${b.addr}</span>
+      <div class="info"><b>${b.name.replace('Aroma Kahve ','')}</b><span>${b.addr}</span>
         <span class="blive-sm" style="color:${z.color}"><span class="d"></span>Tezgah ${z.t} · hazırlık ${z.wait}</span>
       </div>
       <div style="text-align:right">
@@ -247,7 +247,7 @@ function selBranch(id){ state.branch=id; state.remote=true; state.pickupMin=stat
 function renderSplash(){
   const b = BRANCHES.find(x=>x.id===state.branch) || BRANCHES[0];
   const el = $("#splashLoc");
-  if(el) el.innerHTML = `<span class="dot"></span>${b.name.replace("Pablo ","")} Şubesi`;
+  if(el) el.innerHTML = `<span class="dot"></span>${b.name.replace("Aroma Kahve ","")} Şubesi`;
   renderSplashBusy();
   renderSplashAsk();
 }
@@ -285,7 +285,7 @@ function itemCard(it){
 }
 function renderMenu(){
   const b = BRANCHES.find(x=>x.id===state.branch);
-  $("#menuBranch").textContent = b? b.name.replace("Pablo ","Pablo · ") : "Pablo";
+  $("#menuBranch").textContent = b? b.name.replace("Aroma Kahve ","Aroma Kahve · ") : "Aroma Kahve";
   // tablar
   $("#cats").innerHTML = MENU.map((c,i)=>`<div class="chip" data-ci="${i}" onclick="goCat(${i})">${c.cat}</div>`).join("");
   // en sevilenler vitrini
@@ -474,7 +474,7 @@ function renderCart(){
   $("#cartFoot").innerHTML = `
     <div class="summary" style="margin-bottom:12px">
       <div class="l"><span>Ara toplam</span><span>${TL(sub)}</span></div>
-      <div class="l"><span>Pablo Club puanı</span><span style="color:var(--amber-deep);font-weight:700">+${pts} puan</span></div>
+      <div class="l"><span>Aroma Kahve Club puanı</span><span style="color:var(--amber-deep);font-weight:700">+${pts} puan</span></div>
       <div class="l tot"><span>Toplam</span><span>${TL(sub)}</span></div>
     </div>
     <button class="btn amber" onclick="go('s-pay')">Ödemeye Geç · ${TL(sub)}</button>`;
@@ -490,7 +490,7 @@ function renderPay(){
   const sub=cartTotal();
   const extra=(state.suspendAdd||0)*SUSPEND_PRICE, grand=sub+extra;
   const methods = [
-    {k:"wallet",   label:"Pablo Cüzdan", sub:`Bakiye ${TL(wallet)} · yükle, bonus kahve kazan`, badge:"EN HIZLI", bc:"fast", bg:"linear-gradient(135deg,#2f7d5b,#1c4e3a)", t:"₺"},
+    {k:"wallet",   label:"Aroma Kahve Cüzdan", sub:`Bakiye ${TL(wallet)} · yükle, bonus kahve kazan`, badge:"EN HIZLI", bc:"fast", bg:"linear-gradient(135deg,#2f7d5b,#1c4e3a)", t:"₺"},
     {k:"card",     label:"Kayıtlı Kart ·· 4417", sub:"Tek dokunuş, tekrar yazma yok", bg:"linear-gradient(135deg,#c98a3f,#a96f2c)", t:"VISA"},
     {k:"applepay", label:"Apple Pay", sub:"Face ID ile öde", bg:"#000", t:""},
     {k:"googlepay",label:"Google Pay", sub:"Parmak izi ile öde", bg:"#4285F4", t:"G"},
@@ -555,7 +555,7 @@ function startOrder(){
   saveLoy();
   // "her zamanki"yi bu siparişle güncelle
   usual = state.cart.map(l=>({id:l.id,name:l.name,emo:l.emo,qty:l.qty,opt:l.opt,unit:l.unit}));
-  localStorage.setItem("pablo_usual", JSON.stringify(usual));
+  localStorage.setItem("aroma_usual", JSON.stringify(usual));
   // askıda kahve bağışı (opsiyonel) — bu siparişle birlikte
   const extra = (state.suspendAdd||0)*SUSPEND_PRICE;
   if(state.suspendAdd>0){
@@ -613,7 +613,7 @@ function renderCam(mode){  // mode: 'prep' | 'ready' | 'sched' | 'hide'
   const box=$("#baristaCam"); if(!box) return;
   if(mode==="hide"){ box.innerHTML=""; return; }
   const b=BRANCHES.find(x=>x.id===state.branch)||BRANCHES[0];
-  const who=b.name.replace("Pablo ","Pablo · ")+" · Tezgah 1";
+  const who=b.name.replace("Aroma Kahve ","Aroma Kahve · ")+" · Tezgah 1";
   const emo=(currentOrder.emo)||"☕";
   const drink=(currentOrder.items&&currentOrder.items[0])||"Siparişin";
   const nm=currentOrder.name;
@@ -663,7 +663,7 @@ function notifyReady(reward){
   // Gerçek push izni varsa onu da dene (bonus); değilse toast
   try{
     if("Notification" in window && Notification.permission==="granted"){
-      new Notification("Pablo · "+title, { body:$("#toastBody").textContent });
+      new Notification("Aroma Kahve · "+title, { body:$("#toastBody").textContent });
     }
   }catch(e){}
   showToast(title, $("#toastBody").textContent);
@@ -711,7 +711,7 @@ function renderAskida(){
     <div class="ask-top"><div class="ask-emo">🫶</div>
       <div><div class="ask-t">Şu an <b id="askCount">${suspended}</b> kahve askıda</div>
       <div class="ask-s">İhtiyacı olan biri tezgahta ücretsiz alabilir</div></div></div>
-    <p class="ask-desc">Bir yabancıya, bir öğrenciye kahve ısmarla. Sen bırak — ihtiyacı olan "askıda kahve var mı?" deyip alsın. Pablo aradaki köprü.</p>
+    <p class="ask-desc">Bir yabancıya, bir öğrenciye kahve ısmarla. Sen bırak — ihtiyacı olan "askıda kahve var mı?" deyip alsın. Aroma Kahve aradaki köprü.</p>
     <div class="ask-feed">${askFeedHTML()}</div>
     <div class="ask-btns">${[1,2,5].map(n=>`<button class="ask-give" onclick="donate(${n})">+${n} kahve<small>${TL(n*SUSPEND_PRICE)}</small></button>`).join("")}</div>
   </div>`;
@@ -726,7 +726,7 @@ function renderWallet(){
   const box=$("#walletBox"); if(!box) return;
   const p=loyalty.points, t=curTier(p), nt=nextTier(p);
   const pct = nt ? Math.min(100, Math.round((p-t.min)/(nt.min-t.min)*100)) : 100;
-  box.innerHTML = `<div class="opt-title">Pablo Cüzdan</div>
+  box.innerHTML = `<div class="opt-title">Aroma Kahve Cüzdan</div>
     <div class="wallet">
       <div class="w-top">
         <div><div class="w-lbl">Bakiye</div><div class="w-bal">${TL(wallet)}</div></div>
@@ -746,7 +746,7 @@ function topUp(a){
 }
 
 /* ---------- KDS / Barista ekranı ---------- */
-const KDS_KEY="pablo_kds";
+const KDS_KEY="aroma_kds";
 const kdsLoad = ()=> JSON.parse(localStorage.getItem(KDS_KEY)||"[]");
 const kdsSave = q => localStorage.setItem(KDS_KEY, JSON.stringify(q));
 function kdsPush(no,name,cart,pay){ const q=kdsLoad(); q.unshift({no,name,items:cart.map(l=>({n:l.name,q:l.qty})),status:"new",ts:Date.now(),pay}); kdsSave(q); }
@@ -792,7 +792,7 @@ function renderHistory(){
     body.innerHTML=`<div class="gate">
       <div class="gate-ic">🔒</div>
       <h3>Üyelere özel</h3>
-      <p>Geçmiş siparişlerini görmek, tek tuşla tekrar sipariş vermek ve puanlarını takip etmek için Pablo Club üyesi ol — saniyeler sürer.</p>
+      <p>Geçmiş siparişlerini görmek, tek tuşla tekrar sipariş vermek ve puanlarını takip etmek için Aroma Kahve Club üyesi ol — saniyeler sürer.</p>
       <button class="btn amber" onclick="joinClub()">Üye Ol / Giriş Yap</button>
     </div>`;
     return;
@@ -808,9 +808,9 @@ function renderHistory(){
     </div>`).join("");
 }
 function joinClub(){
-  state.member=true; localStorage.setItem("pablo_member","1");
+  state.member=true; localStorage.setItem("aroma_member","1");
   renderHistory();
-  showToast("Pablo Club'a hoş geldin! ☕","Artık geçmiş siparişlerin ve puanların burada.");
+  showToast("Aroma Kahve Club'a hoş geldin! ☕","Artık geçmiş siparişlerin ve puanların burada.");
 }
 function reorderHist(idx){
   const o=histLoad()[idx]; if(!o) return;
@@ -855,7 +855,7 @@ function demoFinish(){
 }
 function startDemo(){
   stopDemo(); demoStop=false; demoPaused=false; demoIdx=0;
-  state.member=true; localStorage.setItem("pablo_member","1");
+  state.member=true; localStorage.setItem("aroma_member","1");
   state.name="Serdar"; state.cart=[]; state.pickupMin=0; state.pay="wallet"; wallet=750; saveWallet();
   const b=$("#demoBtn"); b.textContent="Kapat"; b.className=""; b.onclick=stopDemo;
   $("#demoBar").classList.add("show");
@@ -869,13 +869,13 @@ function startDemo(){
     {fn:()=>{ savedCart=state.cart.map(l=>({...l})); aiReset(); aiOpen(); const t=$("#aiText"); if(t){ t.value="2 latte biri yulaf sütlü, 1 cheesecake"; aiSend(); } }, s:"5 · Alternatif: AI ile Sipariş", c:"İkincil kolaylık: menü gezmek istemeyen müşteri yazarak ya da konuşarak söyler, AI sepeti hazırlar (yulaf sütlü dahil). Aynı motor WhatsApp'ta — opsiyonel ek modül.", w:7800},
     {fn:()=>{ state.cart=savedCart; go("s-cart"); }, s:"6 · Sepet", c:"Menüden seçtiklerimizle devam: ürünler, tutar ve kazanılacak sadakat puanı bir arada."},
     {fn:()=>go("s-pay"), s:"7 · Ödeme", c:"Ödeme tamamen uygulamada: kayıtlı kart, Apple/Google Pay veya cüzdan. Kasa YOK → SIFIR kuyruk."},
-    {fn:()=>{ state.pay="wallet"; renderPay(); }, s:"8 · Cüzdanı Çalıştırıyoruz", c:"Pablo Go cüzdanı zaten var ama kasada ödemek için bekliyor. Biz onu sipariş+sıra-atlamaya bağlıyoruz: müşteri masasından tek dokunuşta öder."},
+    {fn:()=>{ state.pay="wallet"; renderPay(); }, s:"8 · Cüzdanı Çalıştırıyoruz", c:"Aroma Kahve Go cüzdanı zaten var ama kasada ödemek için bekliyor. Biz onu sipariş+sıra-atlamaya bağlıyoruz: müşteri masasından tek dokunuşta öder."},
     {fn:()=>pay(), s:"9 · Sipariş (+ Barista Cam opsiyonel)", c:"Ödeme alınınca sipariş anında mutfağa düşer; müşteri 'hazırlanıyor → hazır' akışını izler. Barista Cam ile canlı da izlenebilir — EK MODÜL, istenirse.", w:10000},
     {fn:()=>go("s-kds"), s:"10 · Barista Ekranı", c:"Sipariş barista ekranında belirir (✓Ödendi), hazırlanır, 'Hazır Rafı'na isimle konur. Barista para almaz, üretir."},
-    {fn:()=>go("s-loy"), s:"11 · Sadakat Yaratır", c:"Mevcut Pablo Coffee Go damga + cüzdanı korunur, üstüne kolay ödeme + puan gelir → daha sık ve tekrar ziyaret, markaya bağlılık."},
-    {fn:()=>go("s-loy"), s:"12 · Askıda Kahve", c:"Dijital askıda kahve: müşteri bir yabancıya kahve ısmarlar, sayaç canlı işler. Duygusal bağ + ücretsiz PR — Pablo köprü olur."},
-    {fn:()=>go("s-biz"), s:"13 · Pablo Ne Kazanır", c:"İki ana kazanç: SIFIR KUYRUK (yoğun saatte kaçan müşteri geri gelir) ve SADAKAT (kolay ödeme + puanla tekrar ziyaret). Üstüne: az personel, veri sahipliği, peşin nakit."},
-    {fn:()=>go("s-splash"), s:"✓ Özet", c:"İzmirli, büyüyen Pablo'yu rakiplerinden ayıran sistem: sırayı bitirir, sadakat yaratır — mevcut app'inizin ÜSTÜNE. İstenirse: WhatsApp & Barista Cam. Final: Web, Android, iOS. BBAI."},
+    {fn:()=>go("s-loy"), s:"11 · Sadakat Yaratır", c:"Mevcut Aroma Kahve Coffee Go damga + cüzdanı korunur, üstüne kolay ödeme + puan gelir → daha sık ve tekrar ziyaret, markaya bağlılık."},
+    {fn:()=>go("s-loy"), s:"12 · Askıda Kahve", c:"Dijital askıda kahve: müşteri bir yabancıya kahve ısmarlar, sayaç canlı işler. Duygusal bağ + ücretsiz PR — Aroma Kahve köprü olur."},
+    {fn:()=>go("s-biz"), s:"13 · Aroma Kahve Ne Kazanır", c:"İki ana kazanç: SIFIR KUYRUK (yoğun saatte kaçan müşteri geri gelir) ve SADAKAT (kolay ödeme + puanla tekrar ziyaret). Üstüne: az personel, veri sahipliği, peşin nakit."},
+    {fn:()=>go("s-splash"), s:"✓ Özet", c:"İzmirli, büyüyen Aroma Kahve'yu rakiplerinden ayıran sistem: sırayı bitirir, sadakat yaratır — mevcut app'inizin ÜSTÜNE. İstenirse: WhatsApp & Barista Cam. Final: Web, Android, iOS. BBAI."},
   ];
   demoGoStep(0);
 }
@@ -886,7 +886,7 @@ function stopDemo(){ demoStop=true; demoPaused=false; clearTimeout(demoTimer); $
 function deepLink(){
   const q=new URLSearchParams(location.search);
   if(q.get("b") && BRANCHES.some(x=>x.id===q.get("b"))) state.branch=q.get("b");
-  if(q.get("member")){ state.member=true; localStorage.setItem("pablo_member","1"); }
+  if(q.get("member")){ state.member=true; localStorage.setItem("aroma_member","1"); }
   if(q.get("pm")) state.pay=q.get("pm");
   if(q.get("seed")){ quickAdd("flatwhite"); quickAdd("icelatte"); quickAdd("lotusmono"); }
   const s=q.get("screen");
@@ -927,12 +927,12 @@ function deepLink(){
 /* ---------- Ziyaret bildirimi (ntfy.sh push) ---------- */
 function notifyVisit(){
   try{
-    if(sessionStorage.getItem("pablo_visit_notified")) return;
-    sessionStorage.setItem("pablo_visit_notified","1");
+    if(sessionStorage.getItem("aroma_visit_notified")) return;
+    sessionStorage.setItem("aroma_visit_notified","1");
     const ref = document.referrer ? (new URL(document.referrer)).hostname : "doğrudan";
-    fetch("https://ntfy.sh/bba-pablo-demo-78b0f9e18f", {
+    fetch("https://ntfy.sh/bba-aroma-demo-78b0f9e18f", {
       method:"POST",
-      headers:{"Title":"Pablo demo ziyareti","Tags":"eyes"},
+      headers:{"Title":"Aroma Kahve demo ziyareti","Tags":"eyes"},
       body:`Biri demoyu açtı · kaynak: ${ref} · ${new Date().toLocaleString("tr-TR")}`
     }).catch(()=>{});
   }catch(e){}

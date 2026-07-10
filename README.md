@@ -1,12 +1,12 @@
-# Pablo · Sırada Bekleme — Satış Demosu
+# Aroma Kahve · Sırada Bekleme — Satış Demosu
 
-White-label kahve sipariş & sadakat platformu (çekirdek: **BBAI**), Pablo Artisan Coffee teması ile.
+White-label kahve sipariş & sadakat platformu (çekirdek: **BBAI**), Aroma Kahve teması ile.
 **POS-bağımsız satış demosu** — Mert'e/karar vericilere göstermek için. Gerçek ödeme/POS yok; akış tam çalışır.
 
 ## Akış
 QR (her masanın QR'ı kendi şube+masasına bağlı) → menü (kahve + tatlı) → ürün özelleştir → sepet →
 ödeme (Apple/Google Pay/kart) → sipariş durumu (hazırlanıyor → hazır) → **"sipariş hazır" bildirimi** →
-Pablo Club sadakat (damga + puan). *Şube seçtirme yok — QR zaten şubeyi belirler.*
+Aroma Kahve Club sadakat (damga + puan). *Şube seçtirme yok — QR zaten şubeyi belirler.*
 
 ## Çalıştırma
 ```bash
