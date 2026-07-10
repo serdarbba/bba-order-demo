@@ -81,7 +81,7 @@ const MENU = [
     { id:"lotusmono",  name:"Lotus Mono Cheesecake",emo:"🍰",desc:"Dilim.", price:340, o:"P", tag:"Çok Satan" },
     { id:"karaorman",  name:"Karaorman Pasta",    emo:"🍰", desc:"Dilim olarak servis edilir.", price:315, o:"P" },
     { id:"monstercookie",name:"Monster Cookie",   emo:"🍪", desc:"Akışkan çikolata.", price:280, o:"P" },
-    { id:"aromabomba", name:"Aroma Kahve Bomba",        emo:"🍩", desc:"Adet olarak servis edilir.", price:200, o:"P" },
+    { id:"aromabomba", name:"Aroma Bomba",        emo:"🍩", desc:"Adet olarak servis edilir.", price:200, o:"P" },
     { id:"lotusberliner",name:"Lotuslu Berliner", emo:"🍩", desc:"Adet olarak servis edilir.", price:220, o:"P" },
   ]},
   { cat:"Bakery & Atıştırmalık", items:[
@@ -474,7 +474,7 @@ function renderCart(){
   $("#cartFoot").innerHTML = `
     <div class="summary" style="margin-bottom:12px">
       <div class="l"><span>Ara toplam</span><span>${TL(sub)}</span></div>
-      <div class="l"><span>Aroma Kahve Club puanı</span><span style="color:var(--amber-deep);font-weight:700">+${pts} puan</span></div>
+      <div class="l"><span>Aroma Club puanı</span><span style="color:var(--amber-deep);font-weight:700">+${pts} puan</span></div>
       <div class="l tot"><span>Toplam</span><span>${TL(sub)}</span></div>
     </div>
     <button class="btn amber" onclick="go('s-pay')">Ödemeye Geç · ${TL(sub)}</button>`;
@@ -490,7 +490,7 @@ function renderPay(){
   const sub=cartTotal();
   const extra=(state.suspendAdd||0)*SUSPEND_PRICE, grand=sub+extra;
   const methods = [
-    {k:"wallet",   label:"Aroma Kahve Cüzdan", sub:`Bakiye ${TL(wallet)} · yükle, bonus kahve kazan`, badge:"EN HIZLI", bc:"fast", bg:"linear-gradient(135deg,#2f7d5b,#1c4e3a)", t:"₺"},
+    {k:"wallet",   label:"Aroma Cüzdan", sub:`Bakiye ${TL(wallet)} · yükle, bonus kahve kazan`, badge:"EN HIZLI", bc:"fast", bg:"linear-gradient(135deg,#2f7d5b,#1c4e3a)", t:"₺"},
     {k:"card",     label:"Kayıtlı Kart ·· 4417", sub:"Tek dokunuş, tekrar yazma yok", bg:"linear-gradient(135deg,#c98a3f,#a96f2c)", t:"VISA"},
     {k:"applepay", label:"Apple Pay", sub:"Face ID ile öde", bg:"#000", t:""},
     {k:"googlepay",label:"Google Pay", sub:"Parmak izi ile öde", bg:"#4285F4", t:"G"},
@@ -726,7 +726,7 @@ function renderWallet(){
   const box=$("#walletBox"); if(!box) return;
   const p=loyalty.points, t=curTier(p), nt=nextTier(p);
   const pct = nt ? Math.min(100, Math.round((p-t.min)/(nt.min-t.min)*100)) : 100;
-  box.innerHTML = `<div class="opt-title">Aroma Kahve Cüzdan</div>
+  box.innerHTML = `<div class="opt-title">Aroma Cüzdan</div>
     <div class="wallet">
       <div class="w-top">
         <div><div class="w-lbl">Bakiye</div><div class="w-bal">${TL(wallet)}</div></div>
@@ -792,7 +792,7 @@ function renderHistory(){
     body.innerHTML=`<div class="gate">
       <div class="gate-ic">🔒</div>
       <h3>Üyelere özel</h3>
-      <p>Geçmiş siparişlerini görmek, tek tuşla tekrar sipariş vermek ve puanlarını takip etmek için Aroma Kahve Club üyesi ol — saniyeler sürer.</p>
+      <p>Geçmiş siparişlerini görmek, tek tuşla tekrar sipariş vermek ve puanlarını takip etmek için Aroma Club üyesi ol — saniyeler sürer.</p>
       <button class="btn amber" onclick="joinClub()">Üye Ol / Giriş Yap</button>
     </div>`;
     return;
@@ -810,7 +810,7 @@ function renderHistory(){
 function joinClub(){
   state.member=true; localStorage.setItem("aroma_member","1");
   renderHistory();
-  showToast("Aroma Kahve Club'a hoş geldin! ☕","Artık geçmiş siparişlerin ve puanların burada.");
+  showToast("Aroma Club'a hoş geldin! ☕","Artık geçmiş siparişlerin ve puanların burada.");
 }
 function reorderHist(idx){
   const o=histLoad()[idx]; if(!o) return;
@@ -869,10 +869,10 @@ function startDemo(){
     {fn:()=>{ savedCart=state.cart.map(l=>({...l})); aiReset(); aiOpen(); const t=$("#aiText"); if(t){ t.value="2 latte biri yulaf sütlü, 1 cheesecake"; aiSend(); } }, s:"5 · Alternatif: AI ile Sipariş", c:"İkincil kolaylık: menü gezmek istemeyen müşteri yazarak ya da konuşarak söyler, AI sepeti hazırlar (yulaf sütlü dahil). Aynı motor WhatsApp'ta — opsiyonel ek modül.", w:7800},
     {fn:()=>{ state.cart=savedCart; go("s-cart"); }, s:"6 · Sepet", c:"Menüden seçtiklerimizle devam: ürünler, tutar ve kazanılacak sadakat puanı bir arada."},
     {fn:()=>go("s-pay"), s:"7 · Ödeme", c:"Ödeme tamamen uygulamada: kayıtlı kart, Apple/Google Pay veya cüzdan. Kasa YOK → SIFIR kuyruk."},
-    {fn:()=>{ state.pay="wallet"; renderPay(); }, s:"8 · Cüzdanı Çalıştırıyoruz", c:"Aroma Kahve Go cüzdanı zaten var ama kasada ödemek için bekliyor. Biz onu sipariş+sıra-atlamaya bağlıyoruz: müşteri masasından tek dokunuşta öder."},
+    {fn:()=>{ state.pay="wallet"; renderPay(); }, s:"8 · Cüzdanı Çalıştırıyoruz", c:"Aroma Go cüzdanı zaten var ama kasada ödemek için bekliyor. Biz onu sipariş+sıra-atlamaya bağlıyoruz: müşteri masasından tek dokunuşta öder."},
     {fn:()=>pay(), s:"9 · Sipariş (+ Barista Cam opsiyonel)", c:"Ödeme alınınca sipariş anında mutfağa düşer; müşteri 'hazırlanıyor → hazır' akışını izler. Barista Cam ile canlı da izlenebilir — EK MODÜL, istenirse.", w:10000},
     {fn:()=>go("s-kds"), s:"10 · Barista Ekranı", c:"Sipariş barista ekranında belirir (✓Ödendi), hazırlanır, 'Hazır Rafı'na isimle konur. Barista para almaz, üretir."},
-    {fn:()=>go("s-loy"), s:"11 · Sadakat Yaratır", c:"Mevcut Aroma Kahve Coffee Go damga + cüzdanı korunur, üstüne kolay ödeme + puan gelir → daha sık ve tekrar ziyaret, markaya bağlılık."},
+    {fn:()=>go("s-loy"), s:"11 · Sadakat Yaratır", c:"Mevcut Aroma Go damga + cüzdanı korunur, üstüne kolay ödeme + puan gelir → daha sık ve tekrar ziyaret, markaya bağlılık."},
     {fn:()=>go("s-loy"), s:"12 · Askıda Kahve", c:"Dijital askıda kahve: müşteri bir yabancıya kahve ısmarlar, sayaç canlı işler. Duygusal bağ + ücretsiz PR — Aroma Kahve köprü olur."},
     {fn:()=>go("s-biz"), s:"13 · Aroma Kahve Ne Kazanır", c:"İki ana kazanç: SIFIR KUYRUK (yoğun saatte kaçan müşteri geri gelir) ve SADAKAT (kolay ödeme + puanla tekrar ziyaret). Üstüne: az personel, veri sahipliği, peşin nakit."},
     {fn:()=>go("s-splash"), s:"✓ Özet", c:"İzmirli, büyüyen Aroma Kahve'yu rakiplerinden ayıran sistem: sırayı bitirir, sadakat yaratır — mevcut app'inizin ÜSTÜNE. İstenirse: WhatsApp & Barista Cam. Final: Web, Android, iOS. BBAI."},

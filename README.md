@@ -6,7 +6,7 @@ White-label kahve sipariş & sadakat platformu (çekirdek: **BBAI**), Aroma Kahv
 ## Akış
 QR (her masanın QR'ı kendi şube+masasına bağlı) → menü (kahve + tatlı) → ürün özelleştir → sepet →
 ödeme (Apple/Google Pay/kart) → sipariş durumu (hazırlanıyor → hazır) → **"sipariş hazır" bildirimi** →
-Aroma Kahve Club sadakat (damga + puan). *Şube seçtirme yok — QR zaten şubeyi belirler.*
+Aroma Club sadakat (damga + puan). *Şube seçtirme yok — QR zaten şubeyi belirler.*
 
 ## Çalıştırma
 ```bash
